@@ -60,7 +60,7 @@ export default function Relatorios() {
         <div className="summary-grid report-summary">
           <div className="summary-card"><span>Entradas do período</span><strong className="positive">{moeda.format(Number(categorias.totalEntradas))}</strong></div>
           <div className="summary-card"><span>Saídas do período</span><strong className="negative">{moeda.format(Number(categorias.totalSaidas))}</strong></div>
-          <div className="summary-card summary-card-highlight"><span>Saldo por movimentação</span><strong>{moeda.format(Number(categorias.totalEntradas) - Number(categorias.totalSaidas))}</strong></div>
+          <div className="summary-card summary-card-highlight"><span>Saldo por movimentação</span><strong>{moeda.format(Number(categorias.saldo))}</strong></div>
         </div>
         <div className="report-grid">
           <section className="panel-card">

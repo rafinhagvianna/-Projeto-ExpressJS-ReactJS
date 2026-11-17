@@ -55,6 +55,7 @@ export async function relatorioCategorias(usuarioId, periodo) {
     periodoAnterior: { inicio: periodo.anteriorInicio, fim: periodo.anteriorFim },
     totalSaidas: decimal(totalSaidas),
     totalEntradas: decimal(totalEntradas),
+    saldo: decimal(totalEntradas - totalSaidas),
     categoriasSaida: saidas.map((row) => montar(row, totalSaidas)),
     categoriasEntrada: entradas.map((row) => montar(row, totalEntradas)),
   };

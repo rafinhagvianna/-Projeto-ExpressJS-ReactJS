@@ -120,6 +120,7 @@ test('isola CRUD e lança parcelado entre dois usuários', { skip: !executar }, 
   const porCategoria = await requisitar('/api/relatorios/categorias?inicio=2026-11-01&fim=2026-11-30', b.token);
   assert.equal(porCategoria.resposta.status, 200);
   assert.equal(porCategoria.dados.totalSaidas, '115.00');
+  assert.equal(porCategoria.dados.saldo, '-115.00');
   assert.equal(porCategoria.dados.categoriasSaida.find((item) => item.id === categoriaSaidaB.id).percentual, 100);
 
   const porFonte = await requisitar('/api/relatorios/fontes-destinos?inicio=2026-11-01&fim=2026-11-30', b.token);
