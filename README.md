@@ -23,7 +23,7 @@ docker compose up -d
 Configure `backend/.env` copiando `backend/.env.example`. Troque `JWT_SECRET` por um segredo longo e aleatório. O `DATABASE_URL` de exemplo funciona com o serviço do `docker-compose.yml`:
 
 ```env
-DATABASE_URL=postgres://financas:financas_dev@localhost:5432/financas
+DATABASE_URL=postgres://postgres:postgres@localhost:5432/financas
 JWT_SECRET=troque-por-um-segredo-longo-e-aleatorio
 PORT=3000
 FRONTEND_ORIGIN=http://localhost:5173
