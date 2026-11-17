@@ -1,14 +1,16 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext.jsx';
 import api from '../services/api.js';
 import { dataBrasileira, moeda } from './formatos.js';
+const GraficoCategorias = lazy(() => import('./GraficoCategorias.jsx'));
 
 export function PainelLayout({ children }) {
   const { usuario, logout } = useAuth();
   const links = [
     ['/', 'Visão geral'], ['/lancamentos', 'Lançamentos'],
     ['/categorias', 'Categorias'], ['/fontes-destinos', 'Fontes e destinos'],
+    ['/relatorios', 'Relatórios'], ['/faturas', 'Faturas'],
   ];
   return (
     <main className="app-shell">
@@ -26,13 +28,14 @@ export function PainelLayout({ children }) {
 
 export default function Painel() {
   const [dados, setDados] = useState(null);
+  const [relatorio, setRelatorio] = useState(null);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
 
   useEffect(() => {
     let ativo = true;
-    api.get('/lancamentos', { params: { pagina: 1, limite: 5 } })
-      .then(({ data }) => { if (ativo) setDados(data); })
+    Promise.all([api.get('/lancamentos', { params: { pagina: 1, limite: 5 } }), api.get('/relatorios/categorias')])
+      .then(([resumo, categorias]) => { if (ativo) { setDados(resumo.data); setRelatorio(categorias.data); } })
       .catch((falha) => { if (ativo) setErro(falha.response?.data?.erro || 'Não foi possível carregar o resumo.'); })
       .finally(() => { if (ativo) setCarregando(false); });
     return () => { ativo = false; };
@@ -55,6 +58,10 @@ export default function Painel() {
               {dados.lancamentos.map((item) => <tr key={item.id}><td><strong>{item.descricao}</strong><small>{item.fonte_destino_nome}</small></td><td>{item.categoria_nome}</td><td>{dataBrasileira(item.data)}</td><td className={item.tipo === 'entrada' ? 'positive' : 'negative'}>{item.tipo === 'entrada' ? '+' : '−'} {moeda.format(Number(item.valor))}</td></tr>)}
             </tbody></table></div>
           )}
+        </section>
+        <section className="panel-card mini-chart-card">
+          <div className="section-heading"><div><span className="eyebrow">SAÍDAS DO MÊS</span><h2>Onde você gastou</h2></div><Link to="/relatorios">Ver relatórios</Link></div>
+          {!relatorio?.categoriasSaida?.some((item) => Number(item.total) > 0) ? <div className="empty-state"><p>Seus gastos por categoria aparecerão aqui.</p></div> : <Suspense fallback={<div className="state-card">Carregando gráfico…</div>}><GraficoCategorias categorias={relatorio.categoriasSaida} /></Suspense>}
         </section>
       </>}
     </section>
