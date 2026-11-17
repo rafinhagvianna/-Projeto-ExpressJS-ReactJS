@@ -56,8 +56,8 @@ export function calcularFatura(dataCompra, cartao, numeroParcela = 1) {
   };
 }
 
-// Divide centavos inteiros e distribui toda a sobra na primeira parcela.
-export function dividirParcelas(valor, quantidade) {
+// Converte um valor em reais para centavos sem parsear números pelo locale.
+export function valorEmCentavos(valor) {
   let totalCentavos;
   if (typeof valor === 'number') {
     totalCentavos = Math.round(valor * 100);
@@ -70,6 +70,17 @@ export function dividirParcelas(valor, quantidade) {
   if (!Number.isSafeInteger(totalCentavos) || totalCentavos <= 0) {
     throw new TypeError('Valor precisa ser positivo e caber em centavos inteiros.');
   }
+  return totalCentavos;
+}
+
+export function centavosParaDecimal(centavos) {
+  if (!Number.isSafeInteger(centavos) || centavos <= 0) throw new TypeError('Centavos inválidos.');
+  return `${Math.floor(centavos / 100)}.${String(centavos % 100).padStart(2, '0')}`;
+}
+
+// Divide centavos inteiros e distribui toda a sobra na primeira parcela.
+export function dividirParcelas(valor, quantidade) {
+  const totalCentavos = valorEmCentavos(valor);
   if (!Number.isInteger(quantidade) || quantidade < 1 || quantidade > 48 || quantidade > totalCentavos) {
     throw new TypeError('Quantidade de parcelas deve estar entre 1 e 48.');
   }

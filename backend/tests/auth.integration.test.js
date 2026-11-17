@@ -9,6 +9,18 @@ let servidor;
 let baseUrl;
 let usuarioCriado;
 
+function gerarCpfTeste() {
+  let base = randomUUID().replace(/\D/g, '').padEnd(9, '0').slice(0, 9);
+  if (/^(\d)\1{8}$/.test(base)) base = `12${base.slice(2)}`;
+  const digito = (prefixo) => {
+    const soma = prefixo.split('').reduce((total, n, indice) => total + Number(n) * (prefixo.length + 1 - indice), 0);
+    const resto = (soma * 10) % 11;
+    return String(resto === 10 ? 0 : resto);
+  };
+  base += digito(base);
+  return base + digito(base);
+}
+
 before(async () => {
   servidor = app.listen(0);
   await new Promise((resolver) => servidor.once('listening', resolver));
@@ -43,7 +55,7 @@ test('cadastro, normalização, login genérico e token', { skip: !executar }, a
   const identificador = randomUUID();
   const email = `teste-${identificador}@financas.test`;
   const corpo = {
-    nome: 'Pessoa de Teste', email: ` ${email.toUpperCase()} `, cpf: '529.982.247-25',
+    nome: 'Pessoa de Teste', email: ` ${email.toUpperCase()} `, cpf: gerarCpfTeste(),
     senha: 'Senha1234', confirmarSenha: 'Senha1234',
   };
 
@@ -58,7 +70,7 @@ test('cadastro, normalização, login genérico e token', { skip: !executar }, a
 
   const duplicadoEmail = await fetch(`${baseUrl}/api/auth/cadastro`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ...corpo, email: email.toUpperCase(), cpf: '111.444.777-35' }),
+    body: JSON.stringify({ ...corpo, email: email.toUpperCase(), cpf: gerarCpfTeste() }),
   });
   assert.equal(duplicadoEmail.status, 409);
   assert.ok((await duplicadoEmail.json()).campos.email);
