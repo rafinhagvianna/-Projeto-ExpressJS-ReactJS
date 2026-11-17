@@ -116,4 +116,22 @@ test('isola CRUD e lança parcelado entre dois usuários', { skip: !executar }, 
   const centavos = parcelado.dados.lancamentos.map((item) => Math.round(Number(item.valor) * 100));
   assert.deepEqual(centavos, [3334, 3333, 3333]);
   assert.equal(centavos.reduce((soma, item) => soma + item, 0), 10000);
+
+  const porCategoria = await requisitar('/api/relatorios/categorias?inicio=2026-11-01&fim=2026-11-30', b.token);
+  assert.equal(porCategoria.resposta.status, 200);
+  assert.equal(porCategoria.dados.totalSaidas, '115.00');
+  assert.equal(porCategoria.dados.categoriasSaida.find((item) => item.id === categoriaSaidaB.id).percentual, 100);
+
+  const porFonte = await requisitar('/api/relatorios/fontes-destinos?inicio=2026-11-01&fim=2026-11-30', b.token);
+  assert.equal(porFonte.resposta.status, 200);
+  assert.equal(porFonte.dados.totalSaidas, '115.00');
+
+  const faturas = await requisitar('/api/relatorios/faturas?meses=3', b.token);
+  assert.equal(faturas.resposta.status, 200);
+  const cartaoFaturas = faturas.dados.cartoes.find((item) => item.id === cartao.dados.fonteDestino.id);
+  assert.equal(cartaoFaturas.faturas.length, 4);
+  assert.equal(cartaoFaturas.limiteUtilizado, '100.00');
+  assert.match(cartaoFaturas.faturas[0].itens[0].descricaoParcela, /1\/3$/);
+  assert.match(cartaoFaturas.faturas[1].itens[0].descricaoParcela, /2\/3$/);
+  assert.match(cartaoFaturas.faturas[2].itens[0].descricaoParcela, /3\/3$/);
 });
