@@ -10,6 +10,7 @@ import FontesDestinos from './components/FontesDestinos.jsx';
 
 const Relatorios = lazy(() => import('./components/Relatorios.jsx'));
 const Faturas = lazy(() => import('./components/Faturas.jsx'));
+const SaudeFinanceira = lazy(() => import('./components/SaudeFinanceira.jsx'));
 const esperaPagina = <div className="center-screen">Carregando página…</div>;
 
 export default function App() {
@@ -23,6 +24,7 @@ export default function App() {
       <Route path="/fontes-destinos" element={<RotaProtegida><PainelLayout><FontesDestinos /></PainelLayout></RotaProtegida>} />
       <Route path="/relatorios" element={<RotaProtegida><PainelLayout><Suspense fallback={esperaPagina}><Relatorios /></Suspense></PainelLayout></RotaProtegida>} />
       <Route path="/faturas" element={<RotaProtegida><PainelLayout><Suspense fallback={esperaPagina}><Faturas /></Suspense></PainelLayout></RotaProtegida>} />
+      <Route path="/saude-financeira" element={<RotaProtegida><PainelLayout><Suspense fallback={esperaPagina}><SaudeFinanceira /></Suspense></PainelLayout></RotaProtegida>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

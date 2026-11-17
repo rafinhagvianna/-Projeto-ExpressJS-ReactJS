@@ -10,7 +10,7 @@ export function PainelLayout({ children }) {
   const links = [
     ['/', 'Visão geral'], ['/lancamentos', 'Lançamentos'],
     ['/categorias', 'Categorias'], ['/fontes-destinos', 'Fontes e destinos'],
-    ['/relatorios', 'Relatórios'], ['/faturas', 'Faturas'],
+    ['/relatorios', 'Relatórios'], ['/faturas', 'Faturas'], ['/saude-financeira', 'Saúde financeira'],
   ];
   return (
     <main className="app-shell">

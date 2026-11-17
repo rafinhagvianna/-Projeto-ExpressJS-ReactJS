@@ -135,4 +135,14 @@ test('isola CRUD e lança parcelado entre dois usuários', { skip: !executar }, 
   assert.match(cartaoFaturas.faturas[0].itens[0].descricaoParcela, /1\/3$/);
   assert.match(cartaoFaturas.faturas[1].itens[0].descricaoParcela, /2\/3$/);
   assert.match(cartaoFaturas.faturas[2].itens[0].descricaoParcela, /3\/3$/);
+
+  const saudeB = await requisitar('/api/saude-financeira', b.token);
+  assert.equal(saudeB.resposta.status, 200);
+  assert.equal(saudeB.dados.projecao.length, 6);
+  assert.equal(saudeB.dados.projecao[0].mes.length, 7);
+  assert.ok('taxaPoupanca' in saudeB.dados.indicadores);
+  assert.ok('reservaEmergencia' in saudeB.dados.indicadores);
+  assert.ok(Array.isArray(saudeB.dados.dicas));
+  const saudeSemToken = await requisitar('/api/saude-financeira', null);
+  assert.equal(saudeSemToken.resposta.status, 401);
 });
