@@ -53,7 +53,7 @@ async function inserirLancamento(usuario, { descricao, tipo, valor, data, catego
       (usuario_id, descricao, tipo, valor, data, categoria_id, fonte_destino_id,
        parcela_atual, total_parcelas, grupo_parcelamento)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-    [usuario.id, descricao, tipo, valor, data, usuario.categorias[categoria], usuario.fontes[fonte], parcela, total, grupo],
+    [usuario.usuario.id, descricao, tipo, valor, data, usuario.categorias[categoria], usuario.fontes[fonte], parcela, total, grupo],
   );
 }
 

@@ -29,11 +29,12 @@ Esta lista confere os requisitos funcionais, de qualidade e demonstração. “I
 
 ## Verificações executadas neste ambiente
 
-- `backend: npm test` — 6 testes passaram, 0 falharam e 2 testes de integração foram ignorados porque `DATABASE_URL`/PostgreSQL não estão disponíveis.
+- `backend: npm run db:reset` — schema recriado no PostgreSQL 16 e dados de demonstração carregados.
+- `backend: npm test` com `DATABASE_URL` configurado — **8 testes passaram, 0 falharam e 0 foram ignorados**, incluindo cadastro/login, unicidade, isolamento entre usuários, CRUD, relatórios, parcelas, faturas e saúde financeira.
 - `frontend: npm run build` — compilação de produção passou.
 - `node --check` — passou para o model e rota de saúde financeira e script de reset.
-- A consulta `npm audit` não pôde ser atualizada nesta execução: o endpoint de auditoria do registry respondeu com erro de rede. A versão anterior durante a construção reportou zero vulnerabilidades nas dependências então instaladas; não se apresenta esse valor como auditoria atual.
+- Os testes de integração foram executados contra PostgreSQL 16.15 local, iniciado temporariamente para esta validação.
 
 ## Validação que depende de PostgreSQL
 
-Depois de instalar Docker Desktop e Node.js, iniciar o PostgreSQL, criar `backend/.env` e executar `npm run db:reset`, rode `npm test` dentro de `backend`. Isso habilita cadastro/login no banco, unicidade, isolamento entre dois usuários, CRUD, relatórios, parcelas, faturas e endpoint de saúde. O comando `db:reset` remove o schema público do banco configurado, portanto deve ser usado apenas em desenvolvimento.
+Para reproduzir em sua máquina, instale Docker Desktop e Node.js, inicie o serviço PostgreSQL, crie `backend/.env` e execute `npm run db:reset` e `npm test` dentro de `backend`. A validação local já foi feita com PostgreSQL 16.15. O comando `db:reset` remove o schema público do banco configurado, portanto deve ser usado apenas em desenvolvimento.
